@@ -1,10 +1,13 @@
+
 import torch
 from torch import nn
 
 from config import d_model, d_ff, d_k, d_v, n_heads, n_layers, src_len, tgt_len
-from data.vocab import src_vocab_size, tgt_vocab_size
+from ..data import vocab
+from vocab import src_vocab_size, tgt_vocab_size
 from my_utils import PositionalEncoding
 from my_utils import get_attn_pad_mask, get_attn_subsequence_mask
+import numpy as np
 
 
 
