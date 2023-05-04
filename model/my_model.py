@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import numpy as np
 
 from config import d_model, d_ff, d_k, d_v, n_heads, n_layers, src_len, tgt_len
 from data.vocab import src_vocab_size, tgt_vocab_size
