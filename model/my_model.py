@@ -1,8 +1,10 @@
-
+import os
 import torch
 from torch import nn
 import sys
-sys.path.append("D:\\transformer-by-hand\\transformer_by_hand")
+root = os.path.dirname(os.path.dirname(__file__))
+sys.path.append(root)
+print(root)
 from config import d_model, d_ff, d_k, d_v, n_heads, n_layers, src_len, tgt_len
 from data.vocab import src_vocab_size, tgt_vocab_size
 from my_utils import PositionalEncoding
@@ -55,7 +57,7 @@ class MultiHeadAttention(nn.Module):
         context, attn = ScaledDotProductAttention()(Q, K, V, attn_mask)
         context = context.transpose(1, 2).reshape(batch_size, -1, n_heads * d_v) # context: [batch_size, len_q, n_heads * d_v]
         output = self.fc(context) # [batch_size, len_q, d_model]
-        return nn.LayerNorm(d_model).cuda()(output + residual), attn
+        return nn.LayerNorm(d_model)(output + residual), attn
 
 class PoswiseFeedForwardNet(nn.Module):
     def __init__(self):
@@ -71,7 +73,7 @@ class PoswiseFeedForwardNet(nn.Module):
         '''
         residual = inputs
         output = self.fc(inputs)
-        return nn.LayerNorm(d_model).cuda()(output + residual) # [batch_size, seq_len, d_model]
+        return nn.LayerNorm(d_model)(output + residual) # [batch_size, seq_len, d_model]
 
 class EncoderLayer(nn.Module):
     def __init__(self):
@@ -145,10 +147,10 @@ class Decoder(nn.Module):
         enc_outputs: [batsh_size, src_len, d_model]
         '''
         dec_outputs = self.tgt_emb(dec_inputs) # [batch_size, tgt_len, d_model]
-        dec_outputs = self.pos_emb(dec_outputs.transpose(0, 1)).transpose(0, 1).cuda() # [batch_size, tgt_len, d_model]
-        dec_self_attn_pad_mask = get_attn_pad_mask(dec_inputs, dec_inputs).cuda() # [batch_size, tgt_len, tgt_len]
-        dec_self_attn_subsequence_mask = get_attn_subsequence_mask(dec_inputs).cuda() # [batch_size, tgt_len, tgt_len]
-        dec_self_attn_mask = torch.gt((dec_self_attn_pad_mask + dec_self_attn_subsequence_mask), 0).cuda() # [batch_size, tgt_len, tgt_len]
+        dec_outputs = self.pos_emb(dec_outputs.transpose(0, 1)).transpose(0, 1) # [batch_size, tgt_len, d_model]
+        dec_self_attn_pad_mask = get_attn_pad_mask(dec_inputs, dec_inputs) # [batch_size, tgt_len, tgt_len]
+        dec_self_attn_subsequence_mask = get_attn_subsequence_mask(dec_inputs) # [batch_size, tgt_len, tgt_len]
+        dec_self_attn_mask = torch.gt((dec_self_attn_pad_mask + dec_self_attn_subsequence_mask), 0) # [batch_size, tgt_len, tgt_len]
 
         dec_enc_attn_mask = get_attn_pad_mask(dec_inputs, enc_inputs) # [batc_size, tgt_len, src_len]
 
@@ -163,9 +165,9 @@ class Decoder(nn.Module):
 class Transformer(nn.Module):
     def __init__(self):
         super(Transformer, self).__init__()
-        self.encoder = Encoder().cuda()
-        self.decoder = Decoder().cuda()
-        self.projection = nn.Linear(d_model, tgt_vocab_size, bias=False).cuda()
+        self.encoder = Encoder()
+        self.decoder = Decoder()
+        self.projection = nn.Linear(d_model, tgt_vocab_size, bias=False)
     def forward(self, enc_inputs, dec_inputs):
         '''
         enc_inputs: [batch_size, src_len]
