@@ -5,7 +5,7 @@ import os
 import sys
 root = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(root)
-from data.data import loader
+from data.my_data import loader
 model = Transformer()
 criterion = nn.CrossEntropyLoss(ignore_index=0)
 optimizer = optim.SGD(model.parameters(), lr=1e-3, momentum=0.99)
