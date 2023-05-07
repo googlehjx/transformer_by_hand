@@ -4,7 +4,7 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as Data
-from vocab import src_vocab, tgt_vocab, sentences
+from .my_vocab import src_vocab, tgt_vocab, sentences
 
 def make_data(sentences):
     enc_inputs, dec_inputs, dec_outputs = [], [], []
