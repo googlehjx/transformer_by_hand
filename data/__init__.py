@@ -1,1 +1,1 @@
-__all__ = ["vocab", "my_data"]
+__all__ = ["my_data", "my_vocab"]
