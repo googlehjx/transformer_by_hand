@@ -10,7 +10,7 @@ model = Transformer()
 criterion = nn.CrossEntropyLoss(ignore_index=0)
 optimizer = optim.SGD(model.parameters(), lr=1e-3, momentum=0.99)
 
-for epoch in range(10):
+for epoch in range(1000):
     for enc_inputs, dec_inputs, dec_outputs in loader:
       '''
       enc_inputs: [batch_size, src_len]
