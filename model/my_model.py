@@ -7,6 +7,8 @@ from data.my_vocab import src_vocab_size, tgt_vocab_size
 from my_utils import PositionalEncoding
 from my_utils import get_attn_pad_mask, get_attn_subsequence_mask
 import numpy as np
+import torch 
+from torch import nn
 
 
 
