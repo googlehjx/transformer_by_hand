@@ -1,4 +1,4 @@
-from my_model import Transformer
+from model.my_model import Transformer
 from torch import nn
 import torch.optim as optim
 import os
