@@ -2,9 +2,12 @@ from model.decode import greedy_decoder
 from data.my_data import loader
 from data.my_vocab import tgt_vocab, idx2word
 from model.my_model import Transformer
+import torch
 
 # Test
 model = Transformer()
+model.load_state_dict(torch.load("trans1.pt"))
+model.eval()
 enc_inputs, _, _ = next(iter(loader))
 # enc_inputs = enc_inputs.cuda()
 for i in range(len(enc_inputs)):
