@@ -33,9 +33,22 @@ def get_attn_pad_mask(seq_q, seq_k):
     batch_size, len_q = seq_q.size()
     batch_size, len_k = seq_k.size()
     # eq(zero) is PAD token
+    
+    pad_attn_mask_k = seq_k.data.eq(0).unsqueeze(1)
+    pad_attn_mask_k = pad_attn_mask_k.expand(batch_size, len_q, len_k)
+
+    pad_attn_mask_q = seq_q.data.eq(0).unsqueeze(2)
+    pad_attn_mask_q = pad_attn_mask_q.expand(batch_size, len_q, len_k)
+
+    pad_attn_mask = pad_attn_mask_k | pad_attn_mask_q
+    return pad_attn_mask
+
+    
+    '''
     pad_attn_mask = seq_k.data.eq(0).unsqueeze(1)  # [batch_size, 1, len_k], False is masked
     return pad_attn_mask.expand(batch_size, len_q, len_k)  # [batch_size, len_q, len_k]
 
+    '''
 def get_attn_subsequence_mask(seq):
     '''
     seq: [batch_size, tgt_len]
